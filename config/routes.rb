@@ -1,8 +1,11 @@
 RedditClone::Application.routes.draw do
   root 'subs#index'
+
   resources :users
-  resource :session
   resources :subs
+  resource :session
+  resources :comments, only: [:destroy]
+
   resources :links do
     resources :comments, only: [:create] do
       resources :comments, only: [:create]
@@ -13,5 +16,4 @@ RedditClone::Application.routes.draw do
       post 'downvote'
     end
   end
-  resources :comments, only: [:destroy]
 end

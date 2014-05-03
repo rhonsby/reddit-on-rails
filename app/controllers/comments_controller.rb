@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+  include CommentsHelper
+
   def create
     @comment = current_user.authored_comments.new(comment_params)
     @comment.link_id = params[:link_id]
@@ -7,6 +9,7 @@ class CommentsController < ApplicationController
     unless @comment.save
       flash[:errors] = @comment.errors.full_messages
     end
+
     redirect_to link_url(@comment.link)
   end
 
@@ -16,11 +19,4 @@ class CommentsController < ApplicationController
 
     redirect_to link_url(@comment.link)
   end
-
-  private
-  def comment_params
-    params.require(:comment).permit(:body)
-  end
 end
-
-

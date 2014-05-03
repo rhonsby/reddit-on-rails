@@ -4,9 +4,6 @@ class LinksController < ApplicationController
   before_action :require_login, except: [:index, :show]
   before_action :require_submitter, only: [:edit, :update]
 
-  def index
-  end
-
   def new
     @link = Link.new
     @subs = Sub.all
@@ -14,6 +11,7 @@ class LinksController < ApplicationController
 
   def create
     @link = current_user.submitted_links.new(link_params)
+
     if @link.save
       redirect_to link_url(@link)
     else
@@ -36,6 +34,7 @@ class LinksController < ApplicationController
 
   def update
     @link = Link.find(params[:id])
+
     if @link.update_attributes(link_params)
       redirect_to link_url(@link)
     else
@@ -50,22 +49,5 @@ class LinksController < ApplicationController
 
   def downvote
     create_vote(false)
-  end
-
-  private
-  def link_params
-    params.require(:link).permit(:title, :url, :text, parent_sub_ids: [])
-  end
-
-  def create_vote(bool)
-    @vote = UserVote.new(
-      user_id: current_user.id,
-      link_id: params[:id],
-      upvote: bool
-      )
-    unless @vote.save
-      flash[:errors] = ["Sorry, I didn't register that vote"]
-    end
-    redirect_to link_url(@vote.link)
   end
 end
